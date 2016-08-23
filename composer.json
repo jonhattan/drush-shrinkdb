@@ -1,0 +1,17 @@
+{
+  "name": "jonhattan/shrinkdb",
+  "description": "Extends Drush sql-sanitize with an option to shrink the database size by wiping older content.",
+  "license": "GPL-2.0+",
+  "authors": [
+    { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" }
+  ],
+  "keywords": ["drush"],
+  "autoload": {
+    "psr-4": {
+      "Drush\\ShrinkDB\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=5.5.0"
+  }
+}
