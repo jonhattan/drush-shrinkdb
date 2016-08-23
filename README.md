@@ -79,3 +79,6 @@ drush @site sql-sanitize --shrink-db
 drush @site sql-sanitize --shrink-db --shrink-db-days=90
 ```
 
+## Author Information
+
+Jonathan Araña Cruz - [SB IT Media, S.L](http://sbit.io).
