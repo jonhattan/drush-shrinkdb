@@ -1,5 +1,5 @@
 {
-  "name": "jonhattan/shrinkdb",
+  "name": "jonhattan/drush-shrinkdb",
   "description": "Extends Drush sql-sanitize with an option to shrink the database size by wiping older content.",
   "license": "GPL-2.0+",
   "authors": [
