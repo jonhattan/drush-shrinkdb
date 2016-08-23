@@ -25,13 +25,12 @@ $ drush help sql-sanitize
 Run sanitization operations on the current database. You can add more sanitization to this command by implementing hook_drush_sql_sync_sanitize().
 
 Options:
- --db-prefix      Enable replacement of braces in sanitize queries.
- --db-url=<mysql://root:pass@127.0.0.1/db>      A Drupal 6 style database URL.
- --sanitize-email=<user+%uid@localhost>      The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.
- --sanitize-password=<password>      The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.
- --shrink-db      Shrink the database size by wiping content older than given days.
- --shrink-db-days=<15>      Age (in days) of the contents to preserve. 15 by default.
-
+ --db-prefix                                Enable replacement of braces in sanitize queries.
+ --db-url=<mysql://root:pass@127.0.0.1/db>  A Drupal 6 style database URL.
+ --sanitize-email=<user+%uid@localhost>     The pattern for test email addresses in the sanitization operation, or "no" to keep email addresses unchanged.  May contain replacement patterns %uid, %mail or %name.
+ --sanitize-password=<password>             The password to assign to all accounts in the sanitization operation, or "no" to keep passwords unchanged.
+ --shrink-db                                Shrink the database size by wiping content older than given days.
+ --shrink-db-days=<15>                      Age (in days) of the contents to preserve. 15 by default.
 ```
 
 
