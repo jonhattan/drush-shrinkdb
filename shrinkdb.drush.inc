@@ -11,7 +11,7 @@ function shrinkdb_drush_help_alter(&$command) {
       'description' => 'Shrink the database size by wiping content older than given days.',
     );
     $command['options']['shrink-db-days'] = array(
-      'description' => 'Age (in days) of the contents to preserve. 30 by default.',
+      'description' => 'Age (in days) of the contents to preserve. 15 by default.',
       'example-value' => '15',
     );
   }
