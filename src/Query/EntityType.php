@@ -152,7 +152,6 @@ class EntityType {
     }
 
     $table = $entity_type->name() . '\_revision\_\_';
-    $table = $table . '\_\_';
     $field_tables = $this->database()
       ->query("show tables like '$table%'")
       ->fetchAll();
