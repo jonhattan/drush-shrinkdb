@@ -43,10 +43,8 @@ class EntityType {
     ];
 
     // @todo@ add a hook for contrib to add its own entity types..
-    $core_entity_types += [
-      ['media', 'media', 'mid'],
-      //['paragraph', 'paragraphs_item', 'id'], // <- the annotation provides revision_data_table and others !!!
-    ];
+    $core_entity_types[] = ['media', 'media', 'mid'];
+    //$core_entity_types[] = ['paragraph', 'paragraphs_item', 'id'], // <- the annotation provides revision_data_table and others !!!
 
     $class = new \ReflectionClass('\Drush\ShrinkDB\EntityTypeSchema');
     foreach ($core_entity_types as $args) {
