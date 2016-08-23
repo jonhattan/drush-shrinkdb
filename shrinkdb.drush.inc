@@ -1,6 +1,6 @@
 <?php
 
-require_once "vendor/autoload.php";
+require 'vendor/autoload.php';
 
 /**
  * Implements hook_drush_help_alter().
