@@ -44,7 +44,6 @@ class EntityType {
 
     // @todo@ add a hook for contrib to add its own entity types..
     $core_entity_types += [
-      ['card', 'card', 'fid'],
       ['media', 'media', 'mid'],
       //['paragraph', 'paragraphs_item', 'id'], // <- the annotation provides revision_data_table and others !!!
     ];
