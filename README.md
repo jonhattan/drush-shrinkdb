@@ -1,8 +1,11 @@
 Extends Drush sql-sanitize with an option to shrink the database size by wiping older content.
 
+It only supports Drupal 8 for now.
+
 [Features]: #features
 [Install]: #install
 [Usage]: #usage
+
 
 #### Table of Contents
 
@@ -10,11 +13,13 @@ Extends Drush sql-sanitize with an option to shrink the database size by wiping 
  * [Install instructions][Install]
  * [Usage][Usage]
 
+
 ## Features
 
  * Wipe content in entity tables (base fields, fields and revisions).
  * Currently it provides hardcoded support for node and media entities.
  * More funcionality is planned. See the [TODO list](TODO.md).
+
 
 ### _Screenshots_
 
