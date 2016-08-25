@@ -7,32 +7,24 @@ namespace Drush\ShrinkDB;
  */
 class EntityTypeSchema {
 
-  private $entity_type;
-  private $base_table;
-  private $id_key;
-  private $uuid_key;
-  private $fieldable;
-  private $revisionable;
+  private $name;
+  private $info;
 
-  public function __construct($entity_type, $base_table, $id_key, $uuid_key = 'uuid', $fieldable = TRUE, $revisionable = TRUE) {
-    $this->entity_type = $entity_type;
-    $this->base_table = $base_table;
-    $this->id_key = $id_key;
-    $this->uuid_key = $uuid_key;
-    $this->fieldable = $fieldable;
-    $this->revisionable = $revisionable;
+  public function __construct($entity_type_name, $entity_type_info) {
+    $this->name = $entity_type_name;
+    $this->info = $entity_type_info;
   }
 
   public function name() {
-    return $this->entity_type;
+    return $this->name;
   }
 
   public function baseTable() {
-    return $this->base_table;
+    return $this->info->base_table;
   }
 
   public function baseTableIdColumn($prefix = '') {
-    $column = $this->id_key;
+    $column = $this->info->entity_keys->id;
     if ($prefix) {
       $column = $prefix . '.' . $column;
     }
@@ -41,8 +33,8 @@ class EntityTypeSchema {
   }
 
   public function baseTableUuidColumn($prefix = '') {
-    if ($this->uuid_key) {
-      $column = $this->uuid_key;
+    if (!empty($this->info->entity_keys->uuid)) {
+      $column = $this->info->entity_keys->uuid;
       if ($prefix) {
         $column = $prefix . '.' . $column;
       }
@@ -63,30 +55,27 @@ class EntityTypeSchema {
     return $columns;
   }
 
-  public function hasUuid() {
-    return (bool)$this->uuid_key;
+  public function dataTable() {
+    return $this->info->data_table;
   }
 
-  public function fieldDataTable() {
-    if ($this->fieldable) {
-      return "{$this->base_table}_field_data";
-    }
-    return NULL;
+  public function isRevisionable() {
+    return !empty($this->info->entity_keys->revision);
   }
 
   public function revisionsTable() {
-    if ($this->revisionable) {
-      return "{$this->base_table}_revision";
+    if ($this->isRevisionable()) {
+      return $this->info->revision_table;
     }
     return NULL;
   }
 
-  public function fieldDataRevisionsTable() {
-    if (($this->fieldable) && ($this->revisionable)) {
-      return "{$this->base_table}_field_revision";
+  public function dataRevisionsTable() {
+    if ($this->isRevisionable()) {
+      return $this->info->revision_data_table;
     }
+
     return NULL;
   }
 
 }
-

@@ -33,61 +33,19 @@ class EntityType {
    * @TODO@ Leverage drush_entity to obtain entity type definitions, or a custom command.
    */
   private function initializeEntityTypes() {
-    // Check which core entity type modules are enabled.
-    // Use ReflectionClass to avoid WET.
-    $core_entity_types = [
-//      ['comment', 'comment', 'cid', 'uuid', TRUE, FALSE],
-      ['node', 'node', 'nid'],
-//      ['taxonomy_term', 'taxonomy_term', 'tid', 'uuid', TRUE, FALSE], // <- the annotation overrides the base table name!!
-//      ['user', 'users', 'uid', 'uuid', TRUE, FALSE],
-    ];
+    $entity_types = drush_command_invoke_all('shrinkdb_entity_types');
 
-    // @todo@ add a hook for contrib to add its own entity types..
-    $core_entity_types[] = ['media', 'media', 'mid'];
-    //$core_entity_types[] = ['paragraph', 'paragraphs_item', 'id'], // <- the annotation provides revision_data_table and others !!!
+    // Note: if there's a copy of drush_entity in any of drush commands folder,
+    // it has precedence over this.
+    $include_dir = dirname(dirname(__DIR__)) . '/vendor/drush_entity';
+    $result = drush_invoke_process('@self', 'entity-type-read', $entity_types, ['include' => $include_dir, 'format' => 'json'], FALSE);
+    if ($result['error_status'] > 0) {
+      throw new \Exception('Failed to invoke «drush @self entity-type-read».');
+    }
+    $entity_types_info = json_decode($result['output']);
 
-    $class = new \ReflectionClass('\Drush\ShrinkDB\EntityTypeSchema');
-    foreach ($core_entity_types as $args) {
-      $instance = $class->newInstanceArgs($args);
-      if ($this->validateEntityType($instance)) {
-        $this->entity_types[$instance->name()] = $instance;
-      }
-    }
-  }
-
-  /**
-   * Returns whether an entity type exists in the database.
-   *
-   * It simply tests the existence of some entity type tables.
-   */
-  private function validateEntityType(EntityTypeSchema $entity_type) {
-    $schema = $this->database()->schema();
-
-    if (!$schema->tableExists($entity_type->baseTable())) {
-      return FALSE;
-    }
-    if (($table = $entity_type->fieldDataTable()) && (!$schema->tableExists($table))) {
-      return FALSE;
-    }
-    if (($table = $entity_type->revisionsTable()) && (!$schema->tableExists($table))) {
-      return FALSE;
-    }
-    if (($table = $entity_type->fieldDataRevisionsTable()) && (!$schema->tableExists($table))) {
-      return FALSE;
-    }
-
-    return TRUE;
-  }
-
-  /**
-   * Checks a given entity type is valid and stores it.
-   */
-  public function addEntityType(EntityTypeSchema $entity_type) {
-    if ($this->validateEntityType($entity_type)) {
-      $this->entity_types[] = $entity_type;
-    }
-    else {
-      return drush_set_error('SHRINKDB_INVALID_ENTITY_TYPE', dt('«!this» doesn\'t seem a valid entity type.', ['!this' => $entity_type]));
+    foreach ($entity_types_info as $name => $info) {
+      $this->entity_types[$name] = new EntityTypeSchema($name, $info);
     }
   }
 
@@ -115,7 +73,7 @@ class EntityType {
     $columns = $entity_type->baseTableColumns('bt');
 
     // Create a temporary table with the ids to delete.
-    if ($fd_table = $entity_type->fieldDataTable()) {
+    if ($fd_table = $entity_type->dataTable()) {
       $tmp_table = 'drush_shrinkdb_' . $entity_type->name();
       $days = -1 * $this->days;
       $queries .= "CREATE TEMPORARY TABLE $tmp_table AS (
@@ -125,16 +83,16 @@ class EntityType {
       );\n";
     }
 
-    // Shrink all entity tables (base, field data, revisions data).
+    // Shrink all entity tables (base, data, revisions).
     $tables = [];
     $tables[] = $base_table;
-    if ($table = $entity_type->fieldDataTable()) {
+    if ($table = $entity_type->dataTable()) {
       $tables[] = $table;
     }
     if ($table = $entity_type->revisionsTable()) {
       $tables[] = $table;
     }
-    if ($table = $entity_type->fieldDataRevisionsTable()) {
+    if ($table = $entity_type->dataRevisionsTable()) {
       $tables[] = $table;
     }
     foreach ($tables as $table) {
