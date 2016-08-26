@@ -1,5 +1,6 @@
 {
   "name": "jonhattan/drush-shrinkdb",
+  "type": "drupal-drush",
   "description": "Extends Drush sql-sanitize with an option to shrink the database size by wiping older content.",
   "authors": [
     { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" }
