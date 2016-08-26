@@ -1,10 +1,10 @@
 {
   "name": "jonhattan/drush-shrinkdb",
   "description": "Extends Drush sql-sanitize with an option to shrink the database size by wiping older content.",
-  "license": "GPL-2.0+",
   "authors": [
     { "name": "Jonathan Araña Cruz", "email": "jonhattan@faita.net" }
   ],
+  "license": "GPL-2.0+",
   "keywords": ["drush"],
   "autoload": {
     "psr-4": {
@@ -13,14 +13,14 @@
   },
   "require": {
     "php": ">=5.5.0",
-    "drush_entity": "~6.0-dev"
+    "drupal/drush_entity": "8.6.x-dev || 6.x-dev"
   },
   "repositories": [
     {
       "type": "package",
       "package": {
-        "name": "drush_entity",
-        "version": "6.0-dev",
+        "name": "drupal/drush_entity",
+        "version": "6.x-dev",
         "dist": {
           "url": "https://ftp.drupal.org/files/projects/drush_entity-8.x-6.x-dev.tar.gz",
           "type": "tar"
@@ -34,6 +34,7 @@
     }
   ],
   "config": {
-    "preferred-install": "dist"
+    "preferred-install": "dist",
+    "secure-http": false
   }
 }

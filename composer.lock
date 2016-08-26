@@ -4,12 +4,12 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c580a8502b698438a9e3c03a605c5a87",
-    "content-hash": "a786d3b5f407d114c2c206e910dc56dc",
+    "hash": "2fb7e95271a33aacf9f3ddd24e48abde",
+    "content-hash": "c82599c5aa84ed9f771f4ca3780eca78",
     "packages": [
         {
-            "name": "drush_entity",
-            "version": "6.0-dev",
+            "name": "drupal/drush_entity",
+            "version": "6.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/drush_entity.git",
@@ -28,7 +28,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "drush_entity": 20
+        "drupal/drush_entity": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
