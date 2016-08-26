@@ -1,3 +1,5 @@
+# drush-shrinkdb
+
 Extends Drush sql-sanitize with an option to shrink the database size by wiping older content.
 
 It only supports Drupal 8 for now.
@@ -7,7 +9,7 @@ It only supports Drupal 8 for now.
 [Usage]: #usage
 
 
-#### Table of Contents
+### Table of Contents
 
  * [Features][Features]
  * [Install instructions][Install]
@@ -51,7 +53,7 @@ The following operations will be done on the target database:
 
 ## Install
 
-### Manual installation
+### Via git
 
 ```
 mkdir -p /usr/share/drush/commands
@@ -61,21 +63,28 @@ cd drush-shrinkdb
 composer install
 ```
 
-### Other installation options comming soon (or not):
-
-#### Composer
-```
-composer require jonhattan/drush-shrinkdb
-```
-
-#### Classic drush dl
+### Via drush
 
 ```
 mkdir -p /usr/share/drush/commands
 drush dl drush_shrinkdb
-cd /usr/share/drush/commands/drush-shrinkdb
+cd /usr/share/drush/commands/drush_shrinkdb
 composer install
 ```
+
+This is system-wide installation. Alternatively you may want to install it
+to a specific project or your home directory.
+
+### Via composer
+
+Package `drupal/drush_shrinkdb` is available both at http://packagist.drupal-composer.org and http://packages.drupal.org/8.
+
+You can require it in your composer project as usual:
+
+```
+composer require drupal/drush_shrinkdb
+```
+
 
 ## Usage
 
