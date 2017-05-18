@@ -1,6 +1,11 @@
 <?php
 
-require 'vendor/autoload.php';
+/**
+ * Implements hook_drush_init().
+ */
+function shrinkdb_drush_init() {
+  drush_autoload(__FILE__);
+}
 
 /**
  * Implements hook_drush_help_alter().
@@ -24,6 +29,10 @@ function shrinkdb_drush_sql_sync_sanitize($source) {
   if (!drush_get_option('shrink-db', FALSE)) {
     return;
   }
+
+  // For some reason sql-sanitize command doesn't run shrinkdb_drush_init()
+  // (other commands do!)
+  drush_autoload(__FILE__);
 
   $days = drush_get_option('shrink-db-days', 15);
 
