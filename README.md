@@ -77,7 +77,7 @@ to a specific project or your home directory.
 
 ### Via composer
 
-Package `drupal/drush_shrinkdb` is available both at http://packagist.drupal-composer.org and http://packages.drupal.org/8.
+Package `drupal/drush_shrinkdb` is available at http://packages.drupal.org/8.
 
 You can require it in your composer project as usual:
 
