@@ -1,6 +1,8 @@
 <?php
 
-require 'vendor/autoload.php';
+function shrinkdb_drush_init() {
+  drush_autoload(__FILE__);
+}
 
 /**
  * Implements hook_drush_help_alter().
@@ -28,7 +30,9 @@ function shrinkdb_drush_sql_sync_sanitize($source) {
   $days = drush_get_option('shrink-db-days', 15);
 
   try {
-    $shrinkdb = new \Drush\ShrinkDB\Query\EntityType($source, $days);
+    $class = '\Drush\ShrinkDB\Query\EntityType';
+    $args = [$source, $days];
+    $shrinkdb = drush_get_class($class, $args);
   }
   catch (\Exception $e) {
     // @todo@ For some reason drush_set_error() triggers a fatal error:

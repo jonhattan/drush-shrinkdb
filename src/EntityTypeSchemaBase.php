@@ -5,26 +5,33 @@ namespace Drush\ShrinkDB;
 /**
  * Home-made entity type schema definition.
  */
-class EntityTypeSchema {
+abstract class EntityTypeSchemaBase implements EntityTypeSchemaInterface {
 
-  private $name;
-  private $info;
+  protected $name;
+  protected $info;
 
   public function __construct($entity_type_name, $entity_type_info) {
     $this->name = $entity_type_name;
     $this->info = $entity_type_info;
   }
 
+  /**
+   * Returns an object with entity type keys.
+   */
+  protected abstract function keys();
+
+  /**
+   * {@inheritdoc}
+   */
   public function name() {
     return $this->name;
   }
 
-  public function baseTable() {
-    return $this->info->base_table;
-  }
-
+  /**
+   * {@inheritdoc}
+   */
   public function baseTableIdColumn($prefix = '') {
-    $column = $this->info->entity_keys->id;
+    $column = $this->keys()->id;
     if ($prefix) {
       $column = $prefix . '.' . $column;
     }
@@ -32,9 +39,12 @@ class EntityTypeSchema {
     return $column;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function baseTableUuidColumn($prefix = '') {
-    if (!empty($this->info->entity_keys->uuid)) {
-      $column = $this->info->entity_keys->uuid;
+    if (!empty($this->keys()->uuid)) {
+      $column = $this->keys()->uuid;
       if ($prefix) {
         $column = $prefix . '.' . $column;
       }
@@ -42,9 +52,12 @@ class EntityTypeSchema {
       return $column;
     }
 
-    return FALSE;
+    return NULL;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function baseTableColumns($prefix = '') {
     $columns = $this->baseTableIdColumn($prefix);
 
@@ -55,27 +68,11 @@ class EntityTypeSchema {
     return $columns;
   }
 
-  public function dataTable() {
-    return $this->info->data_table;
-  }
-
+  /**
+   * {@inheritdoc}
+   */
   public function isRevisionable() {
-    return !empty($this->info->entity_keys->revision);
-  }
-
-  public function revisionsTable() {
-    if ($this->isRevisionable()) {
-      return $this->info->revision_table;
-    }
-    return NULL;
-  }
-
-  public function dataRevisionsTable() {
-    if ($this->isRevisionable()) {
-      return $this->info->revision_data_table;
-    }
-
-    return NULL;
+    return !empty($this->keys()->revision);
   }
 
 }
