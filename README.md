@@ -20,7 +20,8 @@ It only supports Drupal 8 for now.
 
  * Wipe content in entity tables (base fields, fields and revisions).
  * Currently it provides hardcoded support for node and media entities.
- * More funcionality is planned. See the [TODO list](TODO.md).
+ * Leverages the great [drush_entity](https://www.drupal.org/project/drush_entity).
+ * More functionality is planned. See the [TODO list](TODO.md).
 
 
 ### _Screenshots_
@@ -63,6 +64,7 @@ cd drush-shrinkdb
 composer install
 ```
 
+
 ### Via drush
 
 ```
@@ -75,9 +77,10 @@ composer install
 This is system-wide installation. Alternatively you may want to install it
 to a specific project or your home directory.
 
+
 ### Via composer
 
-Package `drupal/drush_shrinkdb` is available both at http://packagist.drupal-composer.org and http://packages.drupal.org/8.
+Package `drupal/drush_shrinkdb` is available both at http://packages.drupal.org/8.
 
 You can require it in your composer project as usual:
 
@@ -92,6 +95,15 @@ composer require drupal/drush_shrinkdb
 drush @site sql-sanitize --shrink-db
 drush @site sql-sanitize --shrink-db --shrink-db-days=90
 ```
+
+
+## Notes
+
+We're adding the repository for `drush_entity` explicitly in `composer.json`
+a dependency on `drupal/core` added by Drupal's packagist. See:
+ * https://www.drupal.org/node/2715435
+ * https://www.drupal.org/node/2828769
+
 
 ## Author Information
 

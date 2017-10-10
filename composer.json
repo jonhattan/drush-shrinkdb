@@ -14,7 +14,7 @@
   },
   "require": {
     "php": ">=5.5.0",
-    "drupal/drush_entity": "8.6.x-dev || 6.x-dev"
+    "drupal/drush_entity": "6.x-dev"
   },
   "repositories": [
     {
@@ -35,7 +35,6 @@
     }
   ],
   "config": {
-    "preferred-install": "dist",
-    "secure-http": false
+    "preferred-install": "dist"
   }
 }

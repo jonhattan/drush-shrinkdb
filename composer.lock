@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2fb7e95271a33aacf9f3ddd24e48abde",
-    "content-hash": "c82599c5aa84ed9f771f4ca3780eca78",
+    "hash": "c156b38d62fe6d52b00c079944b70150",
+    "content-hash": "a32b3dbe228fd0b71a1414f4f39ef945",
     "packages": [
         {
             "name": "drupal/drush_entity",
