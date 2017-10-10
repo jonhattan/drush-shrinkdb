@@ -1,8 +1,6 @@
 <?php
 
-function shrinkdb_drush_init() {
-  drush_autoload(__FILE__);
-}
+require __DIR__ . '/vendor/autoload.php';
 
 /**
  * Implements hook_drush_help_alter().
