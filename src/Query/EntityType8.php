@@ -41,8 +41,7 @@ WHERE changed < UNIX_TIMESTAMP(timestampadd(day, $days, now()))
       $tables[] = $table;
     }
     foreach ($tables as $table) {
-      $query = "DELETE t FROM $table t INNER JOIN $tmp_table ON t.$id_column=$tmp_table.$id_column;\n";
-      $cosa = drush_command_invoke_all_ref('shrinkdb_entity_types_query_alter', $query, $table);
+      $query = "DELETE t FROM $table t INNER JOIN $tmp_table tmp ON t.$id_column=tmp.$id_column;\n";
       $queries .= $query;
     }
 
@@ -66,7 +65,12 @@ WHERE changed < UNIX_TIMESTAMP(timestampadd(day, $days, now()))
     }
 
     foreach ($tables as $table) {
-      $queries .= "DELETE t FROM $table t INNER JOIN $tmp_table ON t.entity_id=$tmp_table.$id_column;\n";
+      $queries .= "DELETE t FROM $table t INNER JOIN $tmp_table tmp ON t.entity_id=tmp.$id_column;\n";
+    }
+
+    $extra_queries = drush_command_invoke_all('shrinkdb_extra_queries', $entity_type, $tmp_table, $days);
+    foreach ($extra_queries as $query) {
+      $queries .= $query . ";\n";
     }
 
     return $queries;
