@@ -48,7 +48,7 @@ function shrinkdb_drush_sql_sync_sanitize($source) {
  * Implements hook_shrinkdb_entity_types().
  */
 function shrinkdb_shrinkdb_entity_types() {
-  return ['node', 'media'];
+  return ['node'];
 }
 
 /**

@@ -6,7 +6,7 @@ use \Drush\ShrinkDB\EntityTypeSchemaInterface;
  * Enable shrink of extra entity types.
  */
 function hook_shrinkdb_entity_types() {
-  return ['myentitytype'];
+  return ['file', 'media'];
 }
 
 /**
