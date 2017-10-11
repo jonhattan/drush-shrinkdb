@@ -27,6 +27,9 @@ function shrinkdb_drush_sql_sync_sanitize($source) {
 
   $days = drush_get_option('shrink-db-days', 15);
 
+  // We want to check if modules are enabled. This requires a full bootstrap.
+  drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_FULL);
+
   try {
     $class = '\Drush\ShrinkDB\Query\EntityType';
     $args = [$source, $days];
@@ -46,4 +49,22 @@ function shrinkdb_drush_sql_sync_sanitize($source) {
  */
 function shrinkdb_shrinkdb_entity_types() {
   return ['node', 'media'];
+}
+
+/**
+ * Implements hook_shrinkdb_dependant_entity_types().
+ */
+function shrinkdb_shrinkdb_dependant_entity_types() {
+  $types = [];
+
+  if (drush_module_exists('comment')) {
+    $types['comment'] = [
+      'columns' => [
+        'parent_id' => 'entity_id',
+        'parent_type' => 'entity_type',
+      ],
+    ];
+  }
+
+  return $types;
 }

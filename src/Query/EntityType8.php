@@ -12,23 +12,54 @@ class EntityType8 extends EntityTypeBase {
   /**
    * {@inheritdoc}
    */
-  function buildEntityTypeQueries(EntityTypeSchemaInterface $entity_type) {
-    $queries = '';
-
+  function createTemporaryTableForEntityType($tmp_table, EntityTypeSchemaInterface $entity_type, $days) {
     $base_table = $entity_type->baseTable();
     $id_column = $entity_type->baseTableIdColumn();
+    $table = $entity_type->dataTable();
     $columns = $entity_type->baseTableColumns('bt');
 
-    // Create a temporary table with the ids to delete.
-    $tmp_table = 'drush_shrinkdb_' . $entity_type->name();
-    $days = -1 * $this->days;
-
-    $table = $entity_type->dataTable();
-    $queries .= "CREATE TEMPORARY TABLE $tmp_table AS (
+    $query = "CREATE TEMPORARY TABLE $tmp_table AS (
 SELECT $columns
 FROM $table fdt INNER JOIN $base_table bt ON fdt.$id_column=bt.$id_column
 WHERE changed < UNIX_TIMESTAMP(timestampadd(day, $days, now()))
 );\n";
+
+    return $query;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function createTemporaryTableForDependantEntityType($tmp_table, EntityTypeSchemaInterface $entity_type, EntityTypeSchemaInterface $parent_entity_type) {
+    $base_table = $entity_type->baseTable();
+    $id_column = $entity_type->baseTableIdColumn();
+    $columns = $entity_type->baseTableColumns('bt');
+
+    $parent_type_column = $entity_type->parentTypeColumn();
+    $parent_id_column = $entity_type->parentIdColumn();
+    $parent_base_table_id_column = $parent_entity_type->baseTableIdColumn();
+    $parent_entity_type_name = $parent_entity_type->name();
+
+    $table = $entity_type->dataTable();
+    $query = "CREATE TEMPORARY TABLE $tmp_table AS (
+    SELECT $columns
+    FROM $table fdt
+    INNER JOIN $base_table bt ON fdt.$id_column=bt.$id_column
+    INNER JOIN drush_shrinkdb_$parent_entity_type_name p ON p.$parent_base_table_id_column=fdt.$parent_id_column
+    WHERE fdt.$parent_type_column='$parent_entity_type_name'
+    );\n";
+
+    return $query;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  function doBuildEntityTypeQueries($tmp_table, EntityTypeSchemaInterface $entity_type) {
+    $queries = '';
+
+    $base_table = $entity_type->baseTable();
+    $id_column = $entity_type->baseTableIdColumn();
 
     // Shrink all entity tables (base, data, revisions).
     $tables = [];
@@ -66,11 +97,6 @@ WHERE changed < UNIX_TIMESTAMP(timestampadd(day, $days, now()))
 
     foreach ($tables as $table) {
       $queries .= "DELETE t FROM $table t INNER JOIN $tmp_table tmp ON t.entity_id=tmp.$id_column;\n";
-    }
-
-    $extra_queries = drush_command_invoke_all('shrinkdb_extra_queries', $entity_type, $tmp_table, $days);
-    foreach ($extra_queries as $query) {
-      $queries .= $query . ";\n";
     }
 
     return $queries;

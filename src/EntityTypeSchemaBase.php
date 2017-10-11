@@ -9,10 +9,16 @@ abstract class EntityTypeSchemaBase implements EntityTypeSchemaInterface {
 
   protected $name;
   protected $info;
+  protected $dependant;
+  protected $parent_type_column;
+  protected $parent_id_column;
 
-  public function __construct($entity_type_name, $entity_type_info) {
+  public function __construct($entity_type_name, $entity_type_info, $dependant = FALSE, $parent_type_column = NULL, $parent_id_column = NULL) {
     $this->name = $entity_type_name;
     $this->info = $entity_type_info;
+    $this->dependant = $dependant;
+    $this->parent_type_column = $parent_type_column;
+    $this->parent_id_column = $parent_id_column;
   }
 
   /**
@@ -75,4 +81,42 @@ abstract class EntityTypeSchemaBase implements EntityTypeSchemaInterface {
     return !empty($this->keys()->revision);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function isDependant() {
+    return $this->dependant;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function parentIdColumn($prefix = '') {
+    if ($this->isDependant()) {
+      $column = $this->parent_id_column;
+      if ($prefix) {
+        $column = $prefix . '.' . $column;
+      }
+
+      return $column;
+    }
+
+    return NULL;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function parentTypeColumn($prefix = '') {
+    if ($this->isDependant()) {
+      $column = $this->parent_type_column;
+      if ($prefix) {
+        $column = $prefix . '.' . $column;
+      }
+
+      return $column;
+    }
+
+    return NULL;
+  }
 }

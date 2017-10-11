@@ -18,10 +18,13 @@ It only supports Drupal 8 for now.
 
 ## Features
 
- * Wipe content in entity tables (base fields, fields and revisions).
- * Currently it provides hardcoded support for node and media entities.
+ * Wipes content older than given days, 15 by default.
+ * Special handling for "dependant" entity types (comment, paragraph):
+ For better consistency, instead of deleting older ones, it deletes the orphaned ones,
+ after wiping parent entity types.
+ * Wipes all entity tables (base fields, fields and revisions).
+ * Hookable so you can extend the base functionality. See `shrinkdb.api.php`.
  * Leverages the great [drush_entity](https://www.drupal.org/project/drush_entity).
- * More functionality is planned. See the [TODO list](TODO.md).
 
 
 ### _Screenshots_

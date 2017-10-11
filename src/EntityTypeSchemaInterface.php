@@ -51,4 +51,19 @@ interface EntityTypeSchemaInterface {
    * Returns the entity type data revisions table.
    */
   public function dataRevisionsTable();
+
+  /**
+   * Returns whether this entity type is dependant of others.
+   */
+  public function isDependant();
+
+  /**
+   * Returns the column name of the parent entity id.
+   */
+  public function parentIdColumn($prefix = '');
+
+  /**
+   * Returns the column name of the parent entity type.
+   */
+  public function parentTypeColumn($prefix = '');
 }
