@@ -1,6 +1,8 @@
 # drush-shrinkdb
 
-Extends Drush sql-sanitize with an option to shrink the database size by wiping older content.
+Provides a command to shrink database size by wiping older content.
+
+Same funcionality is also provided as options to sql-sanitize.
 
 It only supports Drupal 8 for now.
 
@@ -28,6 +30,21 @@ It only supports Drupal 8 for now.
 
 
 ### _Screenshots_
+
+```
+$ drush help shrinkdb
+
+Shrink the database size by wiping content older than given days.
+
+Options:
+ --days=<15>                               Age (in days) of the contents to preserve. 15 by default.
+```
+
+
+```
+$ drush shrinkdb
+Do you really want to wipe content older than 15 days in the current database? (y/n): y
+```
 
 
 ```
@@ -83,7 +100,7 @@ to a specific project or your home directory.
 
 ### Via composer
 
-Package `drupal/drush_shrinkdb` is available both at http://packages.drupal.org/8.
+Package `drupal/drush_shrinkdb` is available at http://packages.drupal.org/8.
 
 You can require it in your composer project as usual:
 
@@ -95,6 +112,9 @@ composer require drupal/drush_shrinkdb
 ## Usage
 
 ```
+drush @site shrinkdb
+drush @site shrinkdb --days=90
+
 drush @site sql-sanitize --shrink-db
 drush @site sql-sanitize --shrink-db --shrink-db-days=90
 ```

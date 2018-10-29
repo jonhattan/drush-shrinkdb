@@ -3,36 +3,81 @@
 require __DIR__ . '/vendor/autoload.php';
 
 /**
+ * Implements hook_drush_command().
+ */
+function shrinkdb_drush_command() {
+  $items = [];
+  $items['shrinkdb'] = [
+    'description' => 'Shrink the database size by wiping content older than given days.',
+    'options' => [
+      'days' => [
+        'description' => 'Age (in days) of the contents to preserve. 15 by default.',
+        'example-value' => '15',
+      ],
+    ],
+  ];
+
+  return $items;
+}
+
+/**
  * Implements hook_drush_help_alter().
+ *
+ * Adds shrinkdb option to sql-sanitize.
  */
 function shrinkdb_drush_help_alter(&$command) {
   if ($command['command'] == 'sql-sanitize') {
-    $command['options']['shrink-db'] = array(
-      'description' => 'Shrink the database size by wiping content older than given days.',
-    );
-    $command['options']['shrink-db-days'] = array(
-      'description' => 'Age (in days) of the contents to preserve. 15 by default.',
-      'example-value' => '15',
-    );
+    $shrinkdb_command = shrinkdb_drush_command()['shrinkdb'];
+    $command['options']['shrink-db'] = $shrinkdb_command['description'];
+    foreach ($shrinkdb_command['options'] as $key => $value) {
+      $command['options']['shrink-db-' . $key] = $value;
+    }
+  }
+}
+
+/**
+ * Implements command callback for 'shrinkdb'.
+ */
+function drush_shrinkdb() {
+  $db_key = 'default';
+  $days = drush_get_option('days', 15);
+
+  if (!drush_confirm(dt('Do you really want to wipe content older than !num days in the current database?', array('!num' => $days)))) {
+    return drush_user_abort();
+  }
+
+  $queries = drush_shrinkdb_get_queries($db_key, $days);
+  $sql = drush_sql_get_class();
+  $result = $sql->query($queries);
+  if (!$result) {
+    throw new \Exception(dt('Wipe content query failed.'));
   }
 }
 
 /**
  * Implements hook_drush_sql_sync_sanitize().
  */
-function shrinkdb_drush_sql_sync_sanitize($source) {
+function shrinkdb_drush_sql_sync_sanitize($db_key) {
   if (!drush_get_option('shrink-db', FALSE)) {
     return;
   }
 
   $days = drush_get_option('shrink-db-days', 15);
 
+  $queries = drush_shrinkdb_get_queries($db_key, $days);
+  drush_sql_register_post_sync_op('shrinkdb', dt('Wipe content older than !num days', array('!num' => $days)), $queries);
+}
+
+/**
+ * Generate the queries.
+ */
+function drush_shrinkdb_get_queries($db_key, $days) {
   // We want to check if modules are enabled. This requires a full bootstrap.
   drush_bootstrap_to_phase(DRUSH_BOOTSTRAP_DRUPAL_FULL);
 
   try {
     $class = '\Drush\ShrinkDB\Query\EntityType';
-    $args = [$source, $days];
+    $args = [$db_key, $days];
     $shrinkdb = drush_get_class($class, $args);
   }
   catch (\Exception $e) {
@@ -41,7 +86,7 @@ function shrinkdb_drush_sql_sync_sanitize($source) {
     return drush_set_error('SHRINKDB_ERROR', 'shrinkdb: ' . $e->getMessage());
   }
 
-  drush_sql_register_post_sync_op('shrinkdb', dt('Wipe content older than !num days', array('!num' => $days)), $shrinkdb->queries());
+  return $shrinkdb->queries();
 }
 
 /**
