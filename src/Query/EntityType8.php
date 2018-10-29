@@ -22,7 +22,7 @@ class EntityType8 extends EntityTypeBase {
     $query = <<<QUERY
 CREATE TEMPORARY TABLE $tmp_table (UNIQUE ($id_column), UNIQUE ($uuid_column))
 AS (
-  SELECT $columns
+  SELECT DISTINCT $columns
   FROM $table fdt
   INNER JOIN $base_table bt ON fdt.$id_column=bt.$id_column
   WHERE changed < UNIX_TIMESTAMP(timestampadd(day, $days, now()))
@@ -50,7 +50,7 @@ QUERY;
     $query = <<<QUERY
 CREATE TEMPORARY TABLE $tmp_table (UNIQUE ($id_column), UNIQUE ($uuid_column))
 AS (
-  SELECT $columns
+  SELECT DISTINCT $columns
   FROM $table fdt
   INNER JOIN $base_table bt ON fdt.$id_column=bt.$id_column
   INNER JOIN drush_shrinkdb_$parent_entity_type_name p ON p.$parent_base_table_id_column=fdt.$parent_id_column
