@@ -39,7 +39,7 @@ abstract class EntityTypeBase {
     // it has precedence over this.
     $include_dir = dirname(dirname(__DIR__)) . '/vendor/drush_entity';
     $all_entity_types = array_merge($entity_types, array_keys($dependant_entity_types));
-    $result = drush_invoke_process('@self', 'entity-type-read', $all_entity_types, ['include' => $include_dir, 'format' => 'json'], FALSE);
+    $result = drush_invoke_process('@self', 'entity-type-read', $all_entity_types, ['include' => $include_dir, 'format' => 'json'], ['override-simulated' => TRUE]);
 
     if ($result['error_status'] > 0) {
       throw new \Exception('Failed to invoke «drush @self entity-type-read».');

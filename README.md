@@ -25,6 +25,7 @@ It only supports Drupal 8 for now.
  For better consistency, instead of deleting older ones, it deletes the orphaned ones,
  after wiping parent entity types.
  * Wipes all entity tables (base fields, fields and revisions).
+ * In simulation mode (`-s`) it prints the queries to run.
  * Hookable so you can extend the base functionality. See `shrinkdb.api.php`.
  * Leverages the great [drush_entity](https://www.drupal.org/project/drush_entity).
 

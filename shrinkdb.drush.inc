@@ -49,9 +49,14 @@ function drush_shrinkdb() {
   }
 
   $queries = drush_shrinkdb_get_queries($db_key, $days);
-  $result = $sql->query($queries);
-  if (!$result) {
-    throw new \Exception(dt('Wipe content query failed.'));
+  if (drush_get_context('DRUSH_SIMULATE')) {
+    print $queries;
+  }
+  else {
+    $result = $sql->query($queries);
+    if (!$result) {
+      throw new \Exception(dt('Wipe content query failed.'));
+    }
   }
 }
 
