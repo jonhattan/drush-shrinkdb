@@ -117,7 +117,7 @@ abstract class EntityTypeBase {
         $tmp_table = 'drush_shrinkdb_' . $entity_type->name() . '_' . $parent_entity_type->name();
         $queries .= $this->createTemporaryTableForDependantEntityType($tmp_table, $entity_type, $parent_entity_type);
         $queries .= $this->doBuildEntityTypeQueries($tmp_table, $entity_type);
-        $extra_queries = drush_command_invoke_all('shrinkdb_dependant_entity_type_extra_queries', $tmp_table, $entity_type, $parent_entity_type);
+        $extra_queries = drush_command_invoke_all('shrinkdb_dependant_entity_type_extra_queries', $tmp_table, $entity_type, $parent_entity_type, $days);
         foreach ($extra_queries as $query) {
           $queries .= $query . ";\n";
         }

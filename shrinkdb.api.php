@@ -68,7 +68,7 @@ function hook_shrinkdb_entity_type_extra_queries($tmp_table, EntityTypeSchemaInt
 /**
  * Provide extra queries for the shrink of a dependant entity type.
  */
-function hook_shrinkdb_dependant_entity_type_extra_queries($tmp_table, EntityTypeSchemaInterface $entity_type, EntityTypeSchemaInterface $parent_entity_type) {
+function hook_shrinkdb_dependant_entity_type_extra_queries($tmp_table, EntityTypeSchemaInterface $entity_type, EntityTypeSchemaInterface $parent_entity_type, $days) {
   $queries = [];
 
   if ($entity_type->name() == 'foo') {
