@@ -43,9 +43,12 @@ function drush_shrinkdb() {
   $days = drush_get_option('days', 15);
 
   $sql = drush_sql_get_class();
-  $db_spec = $sql->db_spec();
-  if (!drush_confirm(dt('Do you really want to wipe content older than !num days in the database !db?', array('!num' => $days, '!db' => $db_spec['database'])))) {
-    return drush_user_abort();
+
+  if (!drush_get_context('DRUSH_AFFIRMATIVE')) {
+    $db_spec = $sql->db_spec();
+    if (!drush_confirm(dt('Do you really want to wipe content older than !num days in the database !db?', array('!num' => $days, '!db' => $db_spec['database'])))) {
+      return drush_user_abort();
+    }
   }
 
   $queries = drush_shrinkdb_get_queries($db_key, $days);
