@@ -34,34 +34,38 @@ abstract class EntityTypeBase {
   protected function initializeEntityTypes() {
     $entity_types = drush_command_invoke_all('shrinkdb_entity_types');
     $dependant_entity_types = drush_command_invoke_all('shrinkdb_dependant_entity_types');
+    drush_command_invoke_all_ref('shrinkdb_entity_types_alter', $entity_types);
+    drush_command_invoke_all_ref('shrinkdb_dependant_entity_types_alter', $dependant_entity_types);
 
     // Note: if there's a copy of drush_entity in any of drush commands folders,
     // it has precedence over this.
     $include_dir = dirname(dirname(__DIR__)) . '/vendor/drush_entity';
     $all_entity_types = array_merge($entity_types, array_keys($dependant_entity_types));
-    $debug = drush_get_context('DRUSH_DEBUG');
-    drush_set_context('DRUSH_DEBUG', FALSE);
-    $result = drush_invoke_process('@self', 'entity-type-read', $all_entity_types, ['include' => $include_dir, 'format' => 'json'], ['override-simulated' => TRUE, 'integrate' => FALSE]);
-    drush_set_context('DRUSH_DEBUG', $debug);
+    if ($all_entity_types) {
+      $debug = drush_get_context('DRUSH_DEBUG');
+      drush_set_context('DRUSH_DEBUG', FALSE);
+      $result = drush_invoke_process('@self', 'entity-type-read', $all_entity_types, ['include' => $include_dir, 'format' => 'json'], ['override-simulated' => TRUE, 'integrate' => FALSE]);
+      drush_set_context('DRUSH_DEBUG', $debug);
 
-    if ($result['error_status'] > 0) {
-      throw new \Exception('Failed to invoke «drush @self entity-type-read».');
-    }
-    $entity_types_info = json_decode($result['output']);
-
-    $class = '\Drush\ShrinkDB\EntityTypeSchema';
-    foreach ($entity_types_info as $name => $info) {
-      $dependant = array_key_exists($name, $dependant_entity_types);
-      $parent_type = $dependant ? $dependant_entity_types[$name]['columns']['parent_type'] : NULL;
-      $parent_id = $dependant ? $dependant_entity_types[$name]['columns']['parent_id'] : NULL;
-      $args = [$name, $info, $dependant, $parent_type, $parent_id];
-      /* @var \Drush\ShrinkDB\EntityTypeSchemaInterface $entity_type */
-      $entity_type = drush_get_class($class, $args);
-      if ($entity_type->isDependant()) {
-        $this->dependant_entity_types[$name] = $entity_type;
+      if ($result['error_status'] > 0) {
+        throw new \Exception('Failed to invoke «drush @self entity-type-read».');
       }
-      else {
-        $this->entity_types[$name] = $entity_type;
+      $entity_types_info = json_decode($result['output']);
+
+      $class = '\Drush\ShrinkDB\EntityTypeSchema';
+      foreach ($entity_types_info as $name => $info) {
+        $dependant = array_key_exists($name, $dependant_entity_types);
+        $parent_type = $dependant ? $dependant_entity_types[$name]['columns']['parent_type'] : NULL;
+        $parent_id = $dependant ? $dependant_entity_types[$name]['columns']['parent_id'] : NULL;
+        $args = [$name, $info, $dependant, $parent_type, $parent_id];
+        /* @var \Drush\ShrinkDB\EntityTypeSchemaInterface $entity_type */
+        $entity_type = drush_get_class($class, $args);
+        if ($entity_type->isDependant()) {
+          $this->dependant_entity_types[$name] = $entity_type;
+        }
+        else {
+          $this->entity_types[$name] = $entity_type;
+        }
       }
     }
   }

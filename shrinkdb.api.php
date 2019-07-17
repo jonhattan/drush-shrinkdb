@@ -29,6 +29,26 @@ function hook_shrinkdb_dependant_entity_types() {
 }
 
 /**
+ * Alter enabled entity types.
+ */
+function hook_shrinkdb_entity_types_alter(&$entity_types) {
+  $key = array_search('node', $entity_types);
+  if ($key !== false) {
+    unset($entity_types[$key]);
+  }
+}
+
+/**
+ * Alter enabled entity types.
+ */
+function hook_shrinkdb_dependant_entity_types_alter(&$dependant_entity_types) {
+  $key = array_search('comment', $dependant_entity_types);
+  if ($key !== false) {
+    unset($dependant_entity_types[$key]);
+  }
+}
+
+/**
  * Provide extra queries to shrink the database.
  */
 function hook_shrinkdb_extra_queries() {
